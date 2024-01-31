@@ -1,10 +1,10 @@
-package jabtwitterback.jabtwitterback;
+package jabtwitterback;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class JabTwitterBackApplicationTests {
+class JjabTwitterApplicationTests {
 
 	@Test
 	void contextLoads() {

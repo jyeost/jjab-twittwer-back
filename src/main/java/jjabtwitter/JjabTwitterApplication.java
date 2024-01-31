@@ -1,13 +1,13 @@
-package jabtwitterback.jabtwitterback;
+package jjabtwitter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JabTwitterBackApplication {
+public class JjabTwitterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JabTwitterBackApplication.class, args);
+		SpringApplication.run(JjabTwitterApplication.class, args);
 	}
 
 }
