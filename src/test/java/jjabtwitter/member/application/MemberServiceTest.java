@@ -1,0 +1,37 @@
+package jjabtwitter.member.application;
+
+import jjabtwitter.IntegrationTest;
+import jjabtwitter.global.exception.ClientException;
+import jjabtwitter.member.application.dto.JoinRequest;
+import jjabtwitter.member.domain.Member;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@IntegrationTest
+class MemberServiceTest {
+
+    private final MemberService memberService;
+
+    public MemberServiceTest(final MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    @Test
+    void 회원가입_정상동작() {
+        final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
+        final Member member = memberService.joinMember(joinRequest);
+
+        Assertions.assertThat(member.getCustomId()).isEqualTo("customId");
+
+    }
+
+    @Test
+    void 회원아이디는_중복으로_가입할_수_없다() {
+        final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
+        memberService.joinMember(joinRequest);
+
+        Assertions.assertThatThrownBy(() -> memberService.joinMember(joinRequest))
+                .isExactlyInstanceOf(ClientException.class);
+    }
+
+}
