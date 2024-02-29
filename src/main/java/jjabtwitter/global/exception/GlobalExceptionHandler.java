@@ -38,4 +38,11 @@ public class GlobalExceptionHandler {
                 .body(exceptionResponse);
     }
 
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ExceptionResponse> handlerBusinessLogicException(final BusinessLogicException e) {
+        final ExceptionResponse exceptionResponse = new ExceptionResponse(e.getCode(), e.getMessage());
+
+        return ResponseEntity.internalServerError()
+                .body(exceptionResponse);
+    }
 }

@@ -5,6 +5,7 @@ import jjabtwitter.global.exception.ExceptionInformation;
 import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.domain.CustomId;
 import jjabtwitter.member.domain.Member;
+import jjabtwitter.member.domain.PasswordEncoder;
 import jjabtwitter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    private final PasswordEncoder passwordEncoder;
+
     public Member joinMember(final JoinRequest joinRequest) {
         final Member member = Member.create(
                 joinRequest.customId(),
@@ -25,6 +28,8 @@ public class MemberService {
         );
 
         validateIsIdDuplicated(joinRequest.customId());
+        member.encrypt(passwordEncoder);
+
         return memberRepository.save(member);
     }
 

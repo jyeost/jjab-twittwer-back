@@ -50,4 +50,8 @@ public class Member extends TemporalRecord {
     public String getProfileImageInfo() {
         return profileImageInfo;
     }
+
+    public void encrypt(final PasswordEncoder passwordEncoder) {
+        password.encrypt(passwordEncoder);
+    }
 }

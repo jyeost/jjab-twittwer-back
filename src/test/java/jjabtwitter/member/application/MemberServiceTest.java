@@ -34,4 +34,6 @@ class MemberServiceTest {
                 .isExactlyInstanceOf(ClientException.class);
     }
 
+    // TODO: 비밀번호 암호화 해서 저장되는 것도 테스트 해야할지...
+
 }
