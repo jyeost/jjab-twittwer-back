@@ -1,15 +1,19 @@
 package jjabtwitter.member.application;
 
 import jjabtwitter.global.exception.ClientException;
-import jjabtwitter.global.exception.ExceptionInformation;
 import jjabtwitter.member.application.dto.JoinRequest;
+import jjabtwitter.member.application.dto.LoginRequest;
 import jjabtwitter.member.domain.CustomId;
 import jjabtwitter.member.domain.Member;
+import jjabtwitter.member.domain.Password;
 import jjabtwitter.member.domain.PasswordEncoder;
 import jjabtwitter.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static jjabtwitter.global.exception.ExceptionInformation.LOGIN_FAIL;
+import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_CUSTOM_ID_DUPLICATE;
 
 @RequiredArgsConstructor
 @Transactional
@@ -35,7 +39,15 @@ public class MemberService {
 
     private void validateIsIdDuplicated(final String customId) {
         if (memberRepository.existsByCustomId(CustomId.create(customId))) {
-            throw new ClientException(ExceptionInformation.MEMBER_CUSTOM_ID_DUPLICATE);
+            throw new ClientException(MEMBER_CUSTOM_ID_DUPLICATE);
         }
+    }
+
+    public Member login(final LoginRequest loginRequest) {
+        final CustomId customId = CustomId.create(loginRequest.customId());
+        final Password password = Password.create(loginRequest.password());
+        password.encrypt(passwordEncoder);
+        return memberRepository.findByCustomIdAndPassword(customId, password)
+                .orElseThrow(() -> new ClientException(LOGIN_FAIL));
     }
 }

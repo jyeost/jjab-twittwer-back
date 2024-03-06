@@ -39,6 +39,10 @@ public class Member extends TemporalRecord {
         return new Member(CustomId.create(customId), nickName, Password.create(password));
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getCustomId() {
         return customId.getValue();
     }
