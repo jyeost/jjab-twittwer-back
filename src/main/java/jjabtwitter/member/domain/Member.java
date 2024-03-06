@@ -39,6 +39,10 @@ public class Member extends TemporalRecord {
         return new Member(CustomId.create(customId), nickName, Password.create(password));
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getCustomId() {
         return customId.getValue();
     }
@@ -49,5 +53,9 @@ public class Member extends TemporalRecord {
 
     public String getProfileImageInfo() {
         return profileImageInfo;
+    }
+
+    public void encrypt(final PasswordEncoder passwordEncoder) {
+        password.encrypt(passwordEncoder);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.EnumMap;
 
+import static jjabtwitter.global.exception.ExceptionInformation.*;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
@@ -18,6 +20,7 @@ public class GlobalExceptionHandler {
             ExceptionInformation.class);
 
     public GlobalExceptionHandler() {
+        exceptionInfoToHttpStatus.put(LOGIN_FAIL, UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)
@@ -38,4 +41,11 @@ public class GlobalExceptionHandler {
                 .body(exceptionResponse);
     }
 
+    @ExceptionHandler(BusinessLogicException.class)
+    public ResponseEntity<ExceptionResponse> handlerBusinessLogicException(final BusinessLogicException e) {
+        final ExceptionResponse exceptionResponse = new ExceptionResponse(e.getCode(), e.getMessage());
+
+        return ResponseEntity.internalServerError()
+                .body(exceptionResponse);
+    }
 }

@@ -4,8 +4,10 @@ import jjabtwitter.IntegrationTest;
 import jjabtwitter.global.exception.ClientException;
 import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.domain.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @IntegrationTest
 class MemberServiceTest {
@@ -21,8 +23,7 @@ class MemberServiceTest {
         final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
         final Member member = memberService.joinMember(joinRequest);
 
-        Assertions.assertThat(member.getCustomId()).isEqualTo("customId");
-
+        assertThat(member.getCustomId()).isEqualTo("customId");
     }
 
     @Test
@@ -30,8 +31,10 @@ class MemberServiceTest {
         final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
         memberService.joinMember(joinRequest);
 
-        Assertions.assertThatThrownBy(() -> memberService.joinMember(joinRequest))
+        assertThatThrownBy(() -> memberService.joinMember(joinRequest))
                 .isExactlyInstanceOf(ClientException.class);
     }
+
+    // TODO: 비밀번호 암호화 해서 저장되는 것도 테스트 해야할지...
 
 }
