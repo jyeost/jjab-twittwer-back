@@ -1,7 +1,5 @@
 package jjabtwitter.member.integration;
 
-import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jjabtwitter.IntegrationFixture;
@@ -9,15 +7,13 @@ import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.application.dto.LoginRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.List;
 
 import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_CUSTOM_ID_DUPLICATE;
 import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_NICKNAME_INVALID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+@SuppressWarnings("NonAsciiCharacters")
 class MemberIntegrationTest extends IntegrationFixture {
 
     @Test
@@ -62,15 +58,7 @@ class MemberIntegrationTest extends IntegrationFixture {
         final LoginRequest loginRequest = new LoginRequest("customId", "password123$");
 
         // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
-                .when()
-                .post("/login")
-                .then()
-                .log().all()
-                .extract();
+        final ExtractableResponse<Response> response = 로그인(loginRequest);
 
         // then
         assertSoftly(
@@ -78,29 +66,5 @@ class MemberIntegrationTest extends IntegrationFixture {
                     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
                     assertThat(response.header("Set-Cookie")).contains("JSESSIONID");
                 });
-//
-//        List<Header> cookies = response.headers().getList("Set-Cookie");
-//
-//        // JSESSIONID 값을 저장할 변수
-//        String jsessionId = "";
-//
-//        // 모든 쿠키를 확인하면서 JSESSIONID를 찾음
-//        for (Header cookie : cookies) {
-//            if (cookie.getValue().contains("JSESSIONID")) {
-//                // JSESSIONID를 가져옴
-//                jsessionId = cookie.getValue().split(";")[0].split("=")[1];
-//                break;
-//            }
-//        }
-//
-//        RestAssured
-//                .given()
-//                .log().all()
-//                .header("Cookie", jsessionId)
-//                .when()
-//                .get("/yaya")
-//                .then()
-//                .log().all()
-//                .extract();
     }
 }
