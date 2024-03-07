@@ -1,5 +1,6 @@
 package jjabtwitter.member.ui;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jjabtwitter.member.application.MemberService;
 import jjabtwitter.member.application.dto.JoinRequest;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
+import static jjabtwitter.member.ui.SessionConst.SESSION;
+
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
@@ -27,11 +30,12 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody final LoginRequest loginRequest, final HttpSession httpSession) {
+    public ResponseEntity<Void> login(@RequestBody final LoginRequest loginRequest, final HttpServletRequest httpRequest) {
 
         final Member member = memberService.login(loginRequest);
-        httpSession.setAttribute("loginIfo", new LoginInfo(member.getId()));
-        httpSession.setMaxInactiveInterval(10000);
+        final HttpSession session = httpRequest.getSession();
+        session.setAttribute(SESSION.getKey(), new LoginInfo(member.getId()));
+        session.setMaxInactiveInterval(SESSION.getValidatedTime());
 
         return ResponseEntity.ok().build();
     }
