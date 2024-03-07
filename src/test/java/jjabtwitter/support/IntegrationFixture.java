@@ -1,16 +1,21 @@
-package jjabtwitter;
+package jjabtwitter.support;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.application.dto.LoginRequest;
+import jjabtwitter.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 
 @IntegrationTest
 public class IntegrationFixture {
+
+    @Autowired
+    private MemberTestSupport memberSupport;
 
     @LocalServerPort
     private int port;
@@ -20,7 +25,8 @@ public class IntegrationFixture {
         RestAssured.port = port;
     }
 
-    protected ExtractableResponse<Response> 회원가입(final JoinRequest joinRequest) {
+    protected ExtractableResponse<Response> 회원가입(final String customId, final String password, final String nickName) {
+        final JoinRequest joinRequest = new JoinRequest(customId, password, nickName);
         return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(joinRequest)
@@ -30,13 +36,16 @@ public class IntegrationFixture {
                 .extract();
     }
 
-    protected ExtractableResponse<Response> 로그인(final LoginRequest loginRequest){
+    protected String 로그인(){
+        final Member member = memberSupport.create().build();
+
         return  RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(loginRequest)
+                .body(new LoginRequest(member.getCustomId(), memberSupport.getDefaultPassword()))
                 .when()
                 .post("/login")
                 .then()
-                .extract();
+                .extract()
+                .sessionId();
     }
 }
