@@ -10,7 +10,7 @@ on:
       [main,dev]
     paths: 'src/**'
 
-permissions: write-all, read-all
+permissions: write-all
 
 jobs:
   build:
