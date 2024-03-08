@@ -4,11 +4,11 @@ on:
   push:
     branches:
        [main,dev]
-    paths: 'jjab-twittwer-back/**'
+    paths: 'src/**'
   pull_request:
     branches:
       [main,dev]
-    paths: 'jjab-twittwer-back/**'
+    paths: 'src/**'
 
 defaults:
   run:
