@@ -1,14 +1,15 @@
 package jjabtwitter.member.application;
 
-import jjabtwitter.IntegrationTest;
 import jjabtwitter.global.exception.ClientException;
 import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.domain.Member;
+import jjabtwitter.support.IntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings("NonAsciiCharacters")
 @IntegrationTest
 class MemberServiceTest {
 

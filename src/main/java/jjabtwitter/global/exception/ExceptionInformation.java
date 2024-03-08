@@ -19,7 +19,16 @@ public enum ExceptionInformation {
     MEMBER_IS_DELETED(2004, "삭제된 회원입니다."),
 
     PASSWORD_ENCRYPT_FAIL(2500, "비밀번호 암호화에 실패했습니다."),
-    LOGIN_FAIL(2501, "로그인에 실패하였습니다.");
+    LOGIN_FAIL(2501, "로그인 정보가 일치하지 않습니다."),
+    AUTHORIZATION_EMPTY(2502, "인가정보가 비었습니다."),
+
+    // 3___: 이미지 관련
+    POST_IMAGE_COUNT_INVALID(3500, "게시글의 사진 개수가 맞지 않습니다."),
+    IMAGE_EXTENSION_INVALID(3501, "업로드 불가능한 이미지 확장자 입니다."),
+    IMAGE_UPLOAD_FAIL(3502, "이미지 업로드에 실패했습니다."),
+
+    // 4___: 게시글 관련
+    POST_CONTENT_LENGTH_INVALID(4000, "게시글의 내용의 길이가 맞지 않습니다.");
 
     private int code;
 

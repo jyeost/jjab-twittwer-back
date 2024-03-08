@@ -1,75 +1,64 @@
 package jjabtwitter.member.integration;
 
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import jjabtwitter.IntegrationFixture;
-import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.application.dto.LoginRequest;
+import jjabtwitter.support.IntegrationFixture;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-
-import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_CUSTOM_ID_DUPLICATE;
-import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_NICKNAME_INVALID;
+import static jjabtwitter.global.exception.ExceptionInformation.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+@SuppressWarnings("NonAsciiCharacters")
 class MemberIntegrationTest extends IntegrationFixture {
 
     @Test
     void 회원가입_정상작동_201() {
-        final JoinRequest joinRequest = new JoinRequest("customId", "password123$", "nickname");
-
-        assertThat(회원가입(joinRequest).statusCode())
+        assertThat(회원가입("customId", "password123$", "nickname").statusCode())
                 .isEqualTo(HttpStatus.CREATED.value());
     }
 
     @Test
     void 회원가입_닉네임_예외_400() {
-        final JoinRequest joinRequest = new JoinRequest("c", "password123$", "nickname");
-
-        final ExtractableResponse<Response> response = 회원가입(joinRequest);
+        final ExtractableResponse<Response> response = 회원가입("c", "password123$", "nickname");
 
         assertSoftly(
                 SoftAssertions -> {
                     assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-                    assertThat(response.jsonPath().get("errorCode").equals(MEMBER_NICKNAME_INVALID.getCode())).isTrue();
+                    assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(MEMBER_NICKNAME_INVALID.getCode());
+
                 });
     }
 
     @Test
     void 회원가입_아이디_중복_400() {
-        final JoinRequest joinRequest = new JoinRequest("customId", "password123$", "nickname");
-
-        회원가입(joinRequest);
-        final ExtractableResponse<Response> response = 회원가입(joinRequest);
+        회원가입("customId", "password123$", "nickname");
+        final ExtractableResponse<Response> response = 회원가입("customId", "password123$", "nickname");
 
         assertSoftly(
                 SoftAssertions -> {
                     assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-                    assertThat(response.jsonPath().get("errorCode").equals(MEMBER_CUSTOM_ID_DUPLICATE.getCode())).isTrue();
+                    assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(MEMBER_CUSTOM_ID_DUPLICATE.getCode());
                 });
     }
 
     @Test
     void 정상_로그인_200() {
         // given
-        회원가입(new JoinRequest("customId", "password123$", "nickname"));
+        회원가입("customId", "password123$", "nickname");
         final LoginRequest loginRequest = new LoginRequest("customId", "password123$");
 
         // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
+        final ExtractableResponse<Response> response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(loginRequest)
                 .when()
                 .post("/login")
                 .then()
-                .log().all()
                 .extract();
 
         // then
@@ -78,29 +67,53 @@ class MemberIntegrationTest extends IntegrationFixture {
                     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
                     assertThat(response.header("Set-Cookie")).contains("JSESSIONID");
                 });
-//
-//        List<Header> cookies = response.headers().getList("Set-Cookie");
-//
-//        // JSESSIONID 값을 저장할 변수
-//        String jsessionId = "";
-//
-//        // 모든 쿠키를 확인하면서 JSESSIONID를 찾음
-//        for (Header cookie : cookies) {
-//            if (cookie.getValue().contains("JSESSIONID")) {
-//                // JSESSIONID를 가져옴
-//                jsessionId = cookie.getValue().split(";")[0].split("=")[1];
-//                break;
-//            }
-//        }
-//
-//        RestAssured
-//                .given()
-//                .log().all()
-//                .header("Cookie", jsessionId)
-//                .when()
-//                .get("/yaya")
-//                .then()
-//                .log().all()
-//                .extract();
+    }
+
+    @Test
+    void 비번이_틀린_경우_로그인_실패_401() {
+        // given
+        회원가입("customId", "password123$", "nickname");
+        final LoginRequest loginRequest = new LoginRequest("customId", "password123!");
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginRequest)
+                .when()
+                .post("/login")
+                .then()
+                .extract();
+
+        // then
+        assertSoftly(
+                SoftAssertions -> {
+                    assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                    assertThat(response.header("Set-Cookie")).isNull();
+                    assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(LOGIN_FAIL.getCode());
+                });
+    }
+
+    @Test
+    void 아이디가_틀린_경우_로그인_실패_401() {
+        // given
+        회원가입("customId", "password123$", "nickname");
+        final LoginRequest loginRequest = new LoginRequest("customId0", "password123$");
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(loginRequest)
+                .when()
+                .post("/login")
+                .then()
+                .extract();
+
+        // then
+        assertSoftly(
+                SoftAssertions -> {
+                    assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+                    assertThat(response.header("Set-Cookie")).isNull();
+                    assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(LOGIN_FAIL.getCode());
+                });
     }
 }
