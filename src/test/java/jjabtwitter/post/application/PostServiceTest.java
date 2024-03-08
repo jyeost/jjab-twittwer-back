@@ -61,7 +61,7 @@ class PostServiceTest implements TestFileCleaner {
     }
 
     @Test
-    void 사진_있는_게시글_작성_정상작동(@Autowired EntityManager entityManager) throws IOException {
+    void 사진_있는_게시글_작성_정상작동(@Autowired EntityManager entityManager) {
         final PostRequest 새게시물 = new PostRequest("content", List.of(images, images, images, images));
         final Long postId = postService.createPost(새게시물, 글쓴이);
 

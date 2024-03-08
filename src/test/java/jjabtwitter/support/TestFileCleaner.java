@@ -12,12 +12,7 @@ public interface TestFileCleaner {
     default void cleanStoreDirectory() {
         final File imageFolder = new File("src/test/resources/storetest/image");
 
-        final FilenameFilter filter = new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return !name.equals("dummy.txt");
-            }
-        };
+        final FilenameFilter filter = (dir, name) -> !name.equals("dummy.txt");
         final File[] files = imageFolder.listFiles(filter);
         assert files != null;
         Arrays.stream(files).forEach(File::delete);
