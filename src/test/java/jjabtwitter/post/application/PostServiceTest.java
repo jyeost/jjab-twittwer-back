@@ -18,8 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static jjabtwitter.global.exception.ExceptionInformation.IMAGE_EXTENSION_INVALID;
-import static jjabtwitter.global.exception.ExceptionInformation.POST_IMAGE_COUNT_INVALID;
+import static jjabtwitter.global.exception.ExceptionInformation.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -75,7 +74,7 @@ class PostServiceTest implements TestFileCleaner {
     }
 
     @Test
-    void 사진을_5개첨부하면_실패한다() {
+    void 사진을_5개첨부하면_게시글_작성에_실패한다() {
         final PostRequest 새게시물 = new PostRequest("content", List.of(images, images, images, images, images));
 
         assertThatThrownBy(() -> postService.createPost(새게시물, 글쓴이))
@@ -84,12 +83,21 @@ class PostServiceTest implements TestFileCleaner {
     }
 
     @Test
-    void 사진중_사진이_아닌_파일이_포함되면_실패한다() throws IOException {
+    void 사진중_사진이_아닌_파일이_포함되면_게시글_작성에_실패한다() throws IOException {
         MockMultipartFile txt = new MockMultipartFile("images", "test5.txt", ContentType.TEXT.name(), new FileInputStream("src/test/resources/uploadtest/image/test5.txt"));
         final PostRequest 새게시물 = new PostRequest("content", List.of(images, images, txt, images));
 
         assertThatThrownBy(() -> postService.createPost(새게시물, 글쓴이))
                 .isExactlyInstanceOf(ClientException.class)
                 .hasMessage(IMAGE_EXTENSION_INVALID.getMessage());
+    }
+
+    @Test
+    void 게시글_내용이_비었다면_게시글_작성에_실패한다() {
+        final PostRequest 새게시물 = new PostRequest(" ", null);
+
+        assertThatThrownBy(() -> postService.createPost(새게시물, 글쓴이))
+                .isExactlyInstanceOf(ClientException.class)
+                .hasMessage(POST_CONTENT_LENGTH_INVALID.getMessage());
     }
 }
