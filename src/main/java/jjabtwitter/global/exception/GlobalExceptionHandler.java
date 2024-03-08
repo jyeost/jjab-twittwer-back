@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.EnumMap;
 
-import static jjabtwitter.global.exception.ExceptionInformation.*;
-import static org.springframework.http.HttpStatus.*;
+import static jjabtwitter.global.exception.ExceptionInformation.AUTHORIZATION_EMPTY;
+import static jjabtwitter.global.exception.ExceptionInformation.LOGIN_FAIL;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @RestControllerAdvice
@@ -21,6 +22,7 @@ public class GlobalExceptionHandler {
 
     public GlobalExceptionHandler() {
         exceptionInfoToHttpStatus.put(LOGIN_FAIL, UNAUTHORIZED);
+        exceptionInfoToHttpStatus.put(AUTHORIZATION_EMPTY, UNAUTHORIZED);
     }
 
     @ExceptionHandler(Exception.class)

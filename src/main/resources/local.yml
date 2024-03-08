@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb;MODE=MySQL
+    url: jdbc:h2:mem:local-db;MODE=MySQL
     driver-class-name: org.h2.Driver
     username: sa
     password: password
@@ -22,6 +22,10 @@ spring:
       host: localhost
       password: 1234
       port: 6379
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 40MB
 
 server:
   servlet:
@@ -36,4 +40,7 @@ logging:
 salt:
   en1: locals1
   en2: localS2
+
+image:
+  root-dir: src/main/resources/static/images/post/
 

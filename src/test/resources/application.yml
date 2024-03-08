@@ -1,0 +1,28 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  sql:
+    init:
+      mode:
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
+
+image:
+  root-dir: src/test/resources/storetest/image/
+
+salt:
+  en1: locals1
+  en2: localS2
+
+

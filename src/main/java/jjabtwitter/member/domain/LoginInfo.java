@@ -16,4 +16,8 @@ public class LoginInfo implements Serializable {
         ids.add(customId);
         representativeIndex = 0;
     }
+
+    public Long getRepresentativeId() {
+        return ids.get(representativeIndex);
+    }
 }

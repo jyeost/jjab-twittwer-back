@@ -39,7 +39,7 @@ public class IntegrationFixture {
     protected String 로그인(){
         final Member member = memberSupport.create().build();
 
-        return  RestAssured.given()
+        return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new LoginRequest(member.getCustomId(), memberSupport.getDefaultPassword()))
                 .when()
