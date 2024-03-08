@@ -10,10 +10,6 @@ on:
       [main,dev]
     paths: 'src/**'
 
-defaults:
-  run:
-    working-directory: backend
-
 jobs:
   build:
 
