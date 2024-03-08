@@ -4,11 +4,11 @@ on:
   push:
     branches:
        [main,dev]
-    paths: 'backend/**'
+    paths: 'src/**'
   pull_request:
     branches:
       [main,dev]
-    paths: 'backend/**'
+    paths: 'src/**'
 
 defaults:
   run:
