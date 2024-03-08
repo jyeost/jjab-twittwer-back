@@ -10,9 +10,7 @@ on:
       [main,dev]
     paths: 'src/**'
 
-defaults:
-  run:
-    working-directory: backend
+permissions: write-all, read-all
 
 jobs:
   build:
