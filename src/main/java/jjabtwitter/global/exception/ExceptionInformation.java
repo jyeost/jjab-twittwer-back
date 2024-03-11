@@ -15,8 +15,9 @@ public enum ExceptionInformation {
     MEMBER_NOT_FOUND(2000, "존재하지 않는 회원입니다."),
     MEMBER_PASSWORD_INVALID(2001, "회원 비밀번호가 잘못되었습니다."),
     MEMBER_NICKNAME_INVALID(2002, "회원 닉네임이 잘못되었습니다."),
-    MEMBER_CUSTOM_ID_DUPLICATE(2003, "이미 존재하는 아이디입니다."),
-    MEMBER_IS_DELETED(2004, "삭제된 회원입니다."),
+    MEMBER_CUSTOM_ID_INVALID(2003, "회원 아이디가 잘못되었습니다."),
+    MEMBER_CUSTOM_ID_DUPLICATE(2004, "이미 존재하는 아이디입니다."),
+    MEMBER_IS_DELETED(2005, "삭제된 회원입니다."),
 
     PASSWORD_ENCRYPT_FAIL(2500, "비밀번호 암호화에 실패했습니다."),
     LOGIN_FAIL(2501, "로그인 정보가 일치하지 않습니다."),

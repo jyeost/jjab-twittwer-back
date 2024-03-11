@@ -2,9 +2,13 @@ package jjabtwitter.member.domain;
 
 import jakarta.persistence.*;
 import jjabtwitter.global.domain.TemporalRecord;
+import jjabtwitter.global.exception.ClientException;
+import jjabtwitter.global.exception.ExceptionInformation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(name = "uk_custom_id", columnNames = {"customId"})})
@@ -36,6 +40,9 @@ public class Member extends TemporalRecord {
     }
 
     public static Member create(final String customId, final String nickName, final String password) {
+        if (Objects.isNull(nickName) || nickName.isBlank() || nickName.length() < 1 || nickName.length() > 30) {
+            throw new ClientException(ExceptionInformation.MEMBER_NICKNAME_INVALID);
+        }
         return new Member(CustomId.create(customId), nickName, Password.create(password));
     }
 
