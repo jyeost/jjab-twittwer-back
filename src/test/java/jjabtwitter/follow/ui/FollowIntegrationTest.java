@@ -14,23 +14,11 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @SuppressWarnings("NonAsciiCharacters")
 class FollowIntegrationTest extends IntegrationFixture {
 
-    @Test
-    void 좋아요_정상동작_확인_200() {
-        // given
-        final String followerSessionId = 로그인_API();
-        final Long followingId = 회원가입();
-
-        // when
-        final int statusCode = RestAssured.given()
+    private static void 팔로우(final String followerSessionId, final Long followingId) {
+        RestAssured.given()
                 .sessionId(followerSessionId)
                 .when()
-                .post("/follow/members/" + followingId)
-                .then()
-                .extract()
-                .statusCode();
-
-        // then
-        assertThat(statusCode).isEqualTo(HttpStatus.OK.value());
+                .post("/follow/members/" + followingId);
     }
 
     @Test
@@ -51,15 +39,30 @@ class FollowIntegrationTest extends IntegrationFixture {
     }
 
     @Test
-    void 이미_팔로우_한_이용자는_다시_팔로우_신청할_수_없다() {
+    void 팔로우_정상동작_확인_200() {
         // given
         final String followerSessionId = 로그인_API();
         final Long followingId = 회원가입();
 
-        RestAssured.given()
+        // when
+        final int statusCode = RestAssured.given()
                 .sessionId(followerSessionId)
                 .when()
-                .post("/follow/members/" + followingId);
+                .post("/follow/members/" + followingId)
+                .then()
+                .extract()
+                .statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void 이미_팔로우_한_이용자는_다시_팔로우_신청할_수_없다() {
+        // given
+        final String followerSessionId = 로그인_API();
+        final Long followingId = 회원가입();
+        팔로우(followerSessionId, followingId);
 
         // when
         final ExtractableResponse<Response> 팔로우_요청_응답 = RestAssured.given()
@@ -77,4 +80,23 @@ class FollowIntegrationTest extends IntegrationFixture {
                 });
     }
 
+    @Test
+    void 언팔로우_정상동작_확인_200() {
+        // given
+        final String followerSessionId = 로그인_API();
+        final Long followingId = 회원가입();
+        팔로우(followerSessionId, followingId);
+
+        // when
+        final int statusCode = RestAssured.given()
+                .sessionId(followerSessionId)
+                .when()
+                .post("/unfollow/members/" + followingId)
+                .then()
+                .extract()
+                .statusCode();
+
+        // then
+        assertThat(statusCode).isEqualTo(HttpStatus.OK.value());
+    }
 }

@@ -20,4 +20,10 @@ public class FollowController {
         followService.followMember(followerId, followingId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/unfollow/members/{followingId}")
+    public ResponseEntity<Void> unfollowMember(@Auth MemberId followerId, @PathVariable Long followingId) {
+        followService.unfollowMember(followerId, followingId);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -50,4 +50,8 @@ public class FollowService {
             throw new ClientException(FOLLOW_SELF_INVALID);
         }
     }
+
+    public int unfollowMember(final MemberId followerId, final Long followingId) {
+        return followRepository.deleteOneByFollowerIdAndFollowingId(followerId.id(), followingId);
+    }
 }
