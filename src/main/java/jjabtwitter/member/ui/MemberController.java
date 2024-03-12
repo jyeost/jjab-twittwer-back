@@ -26,7 +26,7 @@ public class MemberController {
     @PostMapping("/join")
     public ResponseEntity<Void> join(@RequestBody final JoinRequest joinRequest) {
         memberService.joinMember(joinRequest);
-        return ResponseEntity.created(URI.create("/login")).build();
+        return ResponseEntity.created(URI.create("/join")).build();
     }
 
     @PostMapping("/login")
