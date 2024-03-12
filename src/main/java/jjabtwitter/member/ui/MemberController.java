@@ -7,6 +7,7 @@ import jjabtwitter.member.application.dto.JoinRequest;
 import jjabtwitter.member.application.dto.LoginRequest;
 import jjabtwitter.member.domain.LoginInfo;
 import jjabtwitter.member.domain.Member;
+import jjabtwitter.member.ui.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 
-import static jjabtwitter.member.ui.SessionConst.SESSION;
-
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final SessionConst sessionConst;
 
     @PostMapping("/join")
     public ResponseEntity<Void> join(@RequestBody final JoinRequest joinRequest) {
@@ -34,8 +35,8 @@ public class MemberController {
 
         final Member member = memberService.login(loginRequest);
         final HttpSession session = httpRequest.getSession();
-        session.setAttribute(SESSION.getKey(), new LoginInfo(member.getId()));
-        session.setMaxInactiveInterval(SESSION.getValidatedTime());
+        session.setAttribute(sessionConst.getKey(), new LoginInfo(member.getId()));
+        session.setMaxInactiveInterval(sessionConst.getValidatedTime());
 
         return ResponseEntity.ok().build();
     }
