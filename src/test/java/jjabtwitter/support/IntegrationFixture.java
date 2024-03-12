@@ -26,7 +26,11 @@ public class IntegrationFixture {
         RestAssured.port = port;
     }
 
-    protected ExtractableResponse<Response> 회원가입(final String customId, final String password, final String nickName) {
+    protected Long 회원가입() {
+        return memberSupport.create().build().getId();
+    }
+
+    protected ExtractableResponse<Response> 회원가입_API(final String customId, final String password, final String nickName) {
         final JoinRequest joinRequest = new JoinRequest(customId, password, nickName);
         return RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -37,7 +41,7 @@ public class IntegrationFixture {
                 .extract();
     }
 
-    protected String 로그인(){
+    protected String 로그인_API() {
         final Member member = memberSupport.create().build();
 
         return RestAssured.given()

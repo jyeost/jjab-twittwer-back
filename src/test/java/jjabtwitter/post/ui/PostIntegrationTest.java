@@ -23,7 +23,7 @@ class PostIntegrationTest extends IntegrationFixture implements TestFileCleaner 
 
     @Test
     void 사진_있는_글쓰기_정상동작_201() {
-        final String sessionId = 로그인();
+        final String sessionId = 로그인_API();
         final int statusCode = RestAssured.given()
                 .header(new Header("content-type", "multipart/form-data"))
                 .multiPart("images", 이미지1)
@@ -41,7 +41,7 @@ class PostIntegrationTest extends IntegrationFixture implements TestFileCleaner 
 
     @Test
     void 사진_없는_글쓰기_정상동작_201() {
-        final String sessionId = 로그인();
+        final String sessionId = 로그인_API();
 
         final int statusCode = RestAssured.given()
                 .config(RestAssured.config().encoderConfig(encoderConfig().encodeContentTypeAs("multipart/form-data", ContentType.TEXT)))
