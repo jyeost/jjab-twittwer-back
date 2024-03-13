@@ -7,11 +7,13 @@ import jjabtwitter.global.exception.ExceptionInformation;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(name = "uk_custom_id", columnNames = {"customId"})})
+@SQLRestriction("deleted = false")
 @Entity
 public class Member extends TemporalRecord {
 
@@ -47,22 +49,26 @@ public class Member extends TemporalRecord {
     }
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public String getCustomId() {
-        return customId.getValue();
+        return this.customId.getValue();
     }
 
     public String getNickName() {
-        return nickName;
+        return this.nickName;
     }
 
     public String getProfileImageInfo() {
-        return profileImageInfo;
+        return this.profileImageInfo;
     }
 
     public void encrypt(final PasswordEncoder passwordEncoder) {
-        password.encrypt(passwordEncoder);
+        this.password.encrypt(passwordEncoder);
+    }
+
+    public void withdraw() {
+        this.deleted = true;
     }
 }

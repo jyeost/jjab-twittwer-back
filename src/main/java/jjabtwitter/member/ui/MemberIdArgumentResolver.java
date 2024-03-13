@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpSession;
 import jjabtwitter.global.exception.ClientException;
 import jjabtwitter.member.application.dto.MemberId;
 import jjabtwitter.member.domain.LoginInfo;
+import jjabtwitter.member.ui.session.SessionConst;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -15,12 +17,14 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.util.Objects;
 
 import static jjabtwitter.global.exception.ExceptionInformation.AUTHORIZATION_EMPTY;
-import static jjabtwitter.member.ui.SessionConst.SESSION;
 
+@RequiredArgsConstructor
 @Component
 public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static HttpSession getSession(final HttpServletRequest request) {
+    private final SessionConst sessionConst;
+
+    private HttpSession getSession(final HttpServletRequest request) {
         final HttpSession session = request.getSession(false);
 
         if (Objects.isNull(session)) {
@@ -29,8 +33,8 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
         return session;
     }
 
-    private static LoginInfo getAttribute(final HttpSession session) {
-        final Object attribute = session.getAttribute(SESSION.getKey());
+    private LoginInfo getAttribute(final HttpSession session) {
+        final Object attribute = session.getAttribute(sessionConst.getKey());
         if (Objects.isNull(attribute)) {
             throw new ClientException(AUTHORIZATION_EMPTY);
         }
@@ -54,7 +58,7 @@ public class MemberIdArgumentResolver implements HandlerMethodArgumentResolver {
         final HttpSession session = getSession(request);
         final Long userId = getUserId(session);
 
-        session.setMaxInactiveInterval(SESSION.getValidatedTime());
+        session.setMaxInactiveInterval(sessionConst.getValidatedTime());
         return new MemberId(userId);
     }
 

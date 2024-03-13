@@ -2,10 +2,14 @@ package jjabtwitter.member.application;
 
 import jjabtwitter.global.exception.ClientException;
 import jjabtwitter.member.application.dto.JoinRequest;
+import jjabtwitter.member.application.dto.MemberId;
 import jjabtwitter.member.domain.Member;
+import jjabtwitter.member.repository.MemberRepository;
 import jjabtwitter.support.IntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import static jjabtwitter.global.exception.ExceptionInformation.MEMBER_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -13,11 +17,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @IntegrationTest
 class MemberServiceTest {
 
-    private final MemberService memberService;
+    @Autowired
+    private MemberService memberService;
 
-    public MemberServiceTest(final MemberService memberService) {
-        this.memberService = memberService;
-    }
+    @Autowired
+    private MemberRepository memberRepository;
 
     @Test
     void 회원가입_정상동작() {
@@ -36,6 +40,32 @@ class MemberServiceTest {
                 .isExactlyInstanceOf(ClientException.class);
     }
 
-    // TODO: 비밀번호 암호화 해서 저장되는 것도 테스트 해야할지...
+    @Test
+    void 탈퇴한_회원은_조회할_수_없다() {
+        // given
+        final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
+        final Member member = memberService.joinMember(joinRequest);
 
+        // when
+        memberService.withdraw(new MemberId(member.getId()));
+
+        // then
+        assertThat(memberRepository.findById(member.getId())).isEmpty();
+    }
+
+    @Test
+    void 이미_탈퇴한_회원을_또_탈퇴할_수_없다() {
+        // given
+        final JoinRequest joinRequest = new JoinRequest("customId", "password1!", "nickname");
+        final Member member = memberService.joinMember(joinRequest);
+        final MemberId memberId = new MemberId(member.getId());
+
+        // when
+        memberService.withdraw(memberId);
+
+        // then
+        assertThatThrownBy(() -> memberService.withdraw(memberId))
+                .isExactlyInstanceOf(ClientException.class)
+                .hasMessage(MEMBER_NOT_FOUND.getMessage());
+    }
 }
