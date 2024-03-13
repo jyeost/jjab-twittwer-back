@@ -38,4 +38,16 @@ public class Follow extends TemporalRecord {
     public static Follow create(final Member follower, final Member following) {
         return new Follow(follower, following);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Member getFollowing() {
+        return following;
+    }
+
+    public Member getFollower() {
+        return follower;
+    }
 }
