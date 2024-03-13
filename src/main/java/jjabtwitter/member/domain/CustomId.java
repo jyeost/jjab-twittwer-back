@@ -30,7 +30,7 @@ public class CustomId {
 
     private static void validate(final String customId) {
         if (Strings.isBlank(customId) || customId.length() > MAX_ID_LENGTH || customId.length() < MIN_ID_LENGTH) {
-            throw new ClientException(ExceptionInformation.MEMBER_NICKNAME_INVALID);
+            throw new ClientException(ExceptionInformation.MEMBER_CUSTOM_ID_INVALID);
         }
     }
 

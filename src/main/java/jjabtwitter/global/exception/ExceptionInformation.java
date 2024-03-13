@@ -15,8 +15,9 @@ public enum ExceptionInformation {
     MEMBER_NOT_FOUND(2000, "존재하지 않는 회원입니다."),
     MEMBER_PASSWORD_INVALID(2001, "회원 비밀번호가 잘못되었습니다."),
     MEMBER_NICKNAME_INVALID(2002, "회원 닉네임이 잘못되었습니다."),
-    MEMBER_CUSTOM_ID_DUPLICATE(2003, "이미 존재하는 아이디입니다."),
-    MEMBER_IS_DELETED(2004, "삭제된 회원입니다."),
+    MEMBER_CUSTOM_ID_INVALID(2003, "회원 아이디가 잘못되었습니다."),
+    MEMBER_CUSTOM_ID_DUPLICATE(2004, "이미 존재하는 아이디입니다."),
+    MEMBER_IS_DELETED(2005, "삭제된 회원입니다."),
 
     FOLLOW_ALREADY_EXIST(2100, "이미 팔로우 했습니다."),
     FOLLOW_SELF_INVALID(2101, "스스로를 팔로우 할 수 없습니다."),

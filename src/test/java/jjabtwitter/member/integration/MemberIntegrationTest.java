@@ -23,8 +23,20 @@ class MemberIntegrationTest extends IntegrationFixture {
     }
 
     @Test
-    void 회원가입_닉네임_예외_400() {
+    void 회원가입_아이디_예외_400() {
         final ExtractableResponse<Response> response = 회원가입_API("c", "password123$", "nickname");
+
+        assertSoftly(
+                SoftAssertions -> {
+                    assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                    assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(MEMBER_CUSTOM_ID_INVALID.getCode());
+
+                });
+    }
+
+    @Test
+    void 회원가입_닉네임_예외_400() {
+        final ExtractableResponse<Response> response = 회원가입_API("customId", "password123$", "");
 
         assertSoftly(
                 SoftAssertions -> {
