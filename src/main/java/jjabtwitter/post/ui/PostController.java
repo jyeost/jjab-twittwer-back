@@ -4,14 +4,13 @@ import jjabtwitter.member.application.dto.MemberId;
 import jjabtwitter.member.ui.Auth;
 import jjabtwitter.post.application.PostService;
 import jjabtwitter.post.application.dto.PostRequest;
+import jjabtwitter.post.domain.Post;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -25,5 +24,10 @@ public class PostController {
         postService.createPost(postRequest, memberId);
         return ResponseEntity.created(URI.create("/post"))
                 .build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Post>> getPosts(@Auth MemberId memberId) {
+        return ResponseEntity.ok().body(postService.getPosts(memberId));
     }
 }

@@ -2,9 +2,12 @@ package jjabtwitter.post.application;
 
 import io.restassured.http.ContentType;
 import jakarta.persistence.EntityManager;
+import jjabtwitter.follow.application.FollowService;
+import jjabtwitter.follow.domain.Follow;
 import jjabtwitter.global.exception.ClientException;
 import jjabtwitter.member.application.dto.MemberId;
 import jjabtwitter.post.application.dto.PostRequest;
+import jjabtwitter.post.domain.Post;
 import jjabtwitter.post.domain.PostImage;
 import jjabtwitter.support.IntegrationTest;
 import jjabtwitter.support.MemberTestSupport;
@@ -40,6 +43,10 @@ class PostServiceTest implements TestFileCleaner {
 
     @Autowired
     MemberTestSupport memberSupport;
+
+
+    @Autowired
+    FollowService followService;
 
     private MemberId 글쓴이;
 
@@ -100,4 +107,34 @@ class PostServiceTest implements TestFileCleaner {
                 .isExactlyInstanceOf(ClientException.class)
                 .hasMessage(POST_CONTENT_LENGTH_INVALID.getMessage());
     }
+
+
+    @Test
+    void 게시글을_작성한_후_조회한다(){
+        final PostRequest 새게시물 = new PostRequest("content", null);
+        final Long postId = postService.createPost(새게시물, 글쓴이);
+        final Long postId2 = postService.createPost(새게시물, 글쓴이);
+
+        final List<Post> posts = postService.getPosts(글쓴이);
+
+        assertThat(posts).isNotNull();
+        assertThat(posts).hasSize(2);
+    }
+
+    @Test
+    void 작성자와_팔로우한_사람들의_게시글을_조회한다(){
+        final PostRequest 새게시물 = new PostRequest("content", null);
+        final Long postId = postService.createPost(새게시물, 글쓴이);
+
+        Long 팔로잉_id = memberSupport.create().build().getId();
+        final Follow follow = followService.followMember(글쓴이, 팔로잉_id);
+
+        postService.createPost(새게시물, new MemberId(팔로잉_id));
+
+        final List<Post> posts = postService.getPosts(글쓴이);
+
+        assertThat(posts).isNotNull();
+        assertThat(posts).hasSize(2);
+    }
+
 }

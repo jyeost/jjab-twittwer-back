@@ -5,6 +5,7 @@ import jjabtwitter.member.domain.Member;
 import jjabtwitter.member.domain.Password;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -12,4 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByCustomId(CustomId customId);
 
     Optional<Member> findByCustomIdAndPassword(CustomId customId, Password password);
+
+    List<Member> findByIdIn(List<Long> ids);
 }

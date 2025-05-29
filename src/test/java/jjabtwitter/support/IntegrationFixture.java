@@ -1,6 +1,7 @@
 package jjabtwitter.support;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import jjabtwitter.member.application.dto.JoinRequest;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+
+import static io.restassured.config.EncoderConfig.encoderConfig;
 
 @SuppressWarnings("NonAsciiCharacters")
 @IntegrationTest
@@ -67,5 +70,14 @@ public class IntegrationFixture {
                 .then()
                 .extract()
                 .sessionId();
+    }
+
+    protected void 글쓰기_API(String sessionId) {
+        RestAssured.given()
+                .config(RestAssured.config().encoderConfig(encoderConfig().encodeContentTypeAs("multipart/form-data", ContentType.TEXT)))
+                .formParam("content", "content test")
+                .sessionId(sessionId)
+                .when()
+                .post("/posts");
     }
 }

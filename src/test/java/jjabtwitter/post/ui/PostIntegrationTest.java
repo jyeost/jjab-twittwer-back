@@ -15,6 +15,7 @@ import java.io.File;
 import static io.restassured.config.EncoderConfig.encoderConfig;
 import static jjabtwitter.global.exception.ExceptionInformation.AUTHORIZATION_EMPTY;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 @SuppressWarnings("NonAsciiCharacters")
 class PostIntegrationTest extends IntegrationFixture implements TestFileCleaner {
@@ -70,5 +71,20 @@ class PostIntegrationTest extends IntegrationFixture implements TestFileCleaner 
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.jsonPath().getInt("errorCode")).isEqualTo(AUTHORIZATION_EMPTY.getCode());
+    }
+
+    @Test
+    void 글쓰기_정상조회() {
+        final String sessionId = 로그인_API();
+        글쓰기_API(sessionId);
+
+        RestAssured.given()
+                .sessionId(sessionId)
+                .when()
+                .get("/posts")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK.value())
+                .body("list", hasSize(1));
     }
 }
